@@ -1,0 +1,1061 @@
+# encoding: UTF-8
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of Active Record to
+# incrementally modify your database, and then regenerate this schema definition.
+#
+# Note that this schema.rb definition is the authoritative source for your
+# database schema. If you need to create the application database on another
+# system, you should be using db:schema:load, not running all the migrations
+# from scratch. The latter is a flawed and unsustainable approach (the more migrations
+# you'll amass, the slower it'll run and the greater likelihood for issues).
+#
+# It's strongly recommended that you check this file into your version control system.
+
+ActiveRecord::Schema.define(version: 20151204092746) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+  enable_extension "postgis"
+
+  create_table "account_confirmations", force: :cascade do |t|
+    t.integer  "account_id"
+    t.boolean  "accepted",      default: false, null: false
+    t.string   "token",                         null: false
+    t.string   "continue_path"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.integer  "mls_id"
+  end
+
+  add_index "account_confirmations", ["account_id"], name: "index_account_confirmations_on_account_id", using: :btree
+  add_index "account_confirmations", ["mls_id"], name: "index_account_confirmations_on_mls_id", using: :btree
+  add_index "account_confirmations", ["token"], name: "index_account_confirmations_on_token", unique: true, using: :btree
+
+  create_table "accounts", force: :cascade do |t|
+    t.string   "agent_id"
+    t.string   "office_id"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "office_phone"
+    t.string   "cell_phone"
+    t.string   "home_phone"
+    t.string   "primary_phone"
+    t.string   "fax"
+    t.string   "email"
+    t.string   "url"
+    t.string   "street1"
+    t.string   "street2"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.string   "middle_name"
+    t.string   "full_name"
+    t.string   "board_code"
+    t.boolean  "mls_status"
+    t.boolean  "active_status"
+    t.boolean  "active"
+    t.string   "license"
+    t.string   "logon_type"
+    t.datetime "modified_at"
+    t.string   "platform_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "accessible_from_feed", default: true
+    t.decimal  "latitude"
+    t.decimal  "longitude"
+    t.string   "second_home_phone"
+    t.string   "beeper_phone"
+    t.string   "rets_feed_key"
+  end
+
+  add_index "accounts", ["platform_name", "agent_id"], name: "index_accounts_on_platform_name_and_agent_id", unique: true, using: :btree
+
+  create_table "active_admin_comments", force: :cascade do |t|
+    t.string   "namespace"
+    t.text     "body"
+    t.string   "resource_id",   null: false
+    t.string   "resource_type", null: false
+    t.integer  "author_id"
+    t.string   "author_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
+  add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
+  add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
+
+  create_table "agent_notes", force: :cascade do |t|
+    t.string   "agent_id",   null: false
+    t.text     "note"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "agents", force: :cascade do |t|
+    t.string   "platform_agent_id"
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.string   "platform_name"
+    t.datetime "last_action_required_email_sent"
+  end
+
+  add_index "agents", ["platform_name", "platform_agent_id"], name: "index_agents_on_platform_name_and_platform_agent_id", unique: true, using: :btree
+
+  create_table "answers", force: :cascade do |t|
+    t.integer  "question_option_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "listing_id"
+  end
+
+  add_index "answers", ["question_option_id"], name: "index_answers_on_question_option_id", using: :btree
+  add_index "answers", ["user_id"], name: "index_answers_on_user_id", using: :btree
+
+  create_table "authentication_tokens", force: :cascade do |t|
+    t.string   "uid"
+    t.string   "token"
+    t.datetime "expires_at"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "authentication_tokens", ["user_id"], name: "index_authentication_tokens_on_user_id", using: :btree
+
+  create_table "broadcast_tokens", force: :cascade do |t|
+    t.integer "support_conversation_id"
+    t.string  "agent_id"
+    t.string  "platform_name"
+    t.string  "token"
+    t.string  "state",                             default: "inited"
+    t.integer "broadcast_support_conversation_id"
+  end
+
+  add_index "broadcast_tokens", ["agent_id", "platform_name"], name: "index_broadcast_tokens_on_agent_id_and_platform_name", using: :btree
+  add_index "broadcast_tokens", ["broadcast_support_conversation_id"], name: "index_broadcast_tokens_on_broadcast_support_conversation_id", using: :btree
+  add_index "broadcast_tokens", ["support_conversation_id"], name: "index_broadcast_tokens_on_support_conversation_id", using: :btree
+  add_index "broadcast_tokens", ["token"], name: "index_broadcast_tokens_on_token", unique: true, using: :btree
+
+  create_table "contacts", force: :cascade do |t|
+    t.integer  "user_id",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "platform_id"
+    t.integer  "category"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "email"
+    t.string   "phone"
+    t.text     "notes"
+    t.string   "platform_name"
+  end
+
+  create_table "device_tokens", force: :cascade do |t|
+    t.integer  "user_id",     null: false
+    t.string   "token",       null: false
+    t.string   "app_version"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "device_type"
+  end
+
+  add_index "device_tokens", ["user_id", "token"], name: "index_device_tokens_on_user_id_and_token", unique: true, using: :btree
+
+  create_table "hide_survey_requests", force: :cascade do |t|
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "listing_id"
+  end
+
+  add_index "hide_survey_requests", ["user_id"], name: "index_hide_survey_requests_on_user_id", using: :btree
+
+  create_table "listing_extra_data", force: :cascade do |t|
+    t.integer  "listing_id",                                              null: false
+    t.string   "listing_key"
+    t.string   "mls_id"
+    t.string   "mls_status"
+    t.string   "standard_status"
+    t.boolean  "approval_status"
+    t.string   "property_type"
+    t.string   "property_class"
+    t.string   "listing_prefix"
+    t.integer  "year_built"
+    t.float    "list_price"
+    t.float    "close_price"
+    t.float    "current_price"
+    t.float    "original_list_price"
+    t.float    "previous_list_price"
+    t.string   "street_name"
+    t.string   "street_number"
+    t.integer  "street_number_integer"
+    t.string   "street_dir_prefix"
+    t.string   "street_dir_suffix"
+    t.string   "street_suffix"
+    t.string   "street_additional_info"
+    t.string   "city"
+    t.string   "state_or_province"
+    t.string   "county_or_parish"
+    t.string   "postal_code"
+    t.string   "unparsed_address"
+    t.string   "mls_area_major"
+    t.string   "mls_area_minor"
+    t.string   "subdivision_name"
+    t.decimal  "latitude"
+    t.decimal  "longitude"
+    t.text     "directions"
+    t.string   "list_agent_id"
+    t.string   "list_agent_first_name"
+    t.string   "list_agent_last_name"
+    t.string   "list_agent_middle_name"
+    t.string   "list_agent_user_type"
+    t.string   "list_agent_state_license"
+    t.text     "list_agent_association"
+    t.string   "list_agent_email"
+    t.string   "list_agent_preferred_phone"
+    t.string   "list_agent_cell_phone"
+    t.string   "list_agent_office_phone"
+    t.string   "list_agent_direct_phone"
+    t.text     "list_agent_url"
+    t.string   "list_agent_voice_mail"
+    t.string   "list_agent_preferred_phone_ext"
+    t.string   "list_agent_office_phone_ext"
+    t.string   "list_agent_voice_mail_ext"
+    t.string   "list_agent_fax"
+    t.string   "list_agent_designation"
+    t.string   "list_agent_pager"
+    t.string   "list_agent_toll_free_phone"
+    t.string   "list_office_id"
+    t.string   "list_office_name"
+    t.string   "list_office_user_type"
+    t.string   "list_office_email"
+    t.string   "list_office_phone"
+    t.string   "list_office_phone_ext"
+    t.string   "list_office_fax"
+    t.text     "list_office_url"
+    t.string   "list_company_id"
+    t.string   "co_list_agent_id"
+    t.string   "co_list_agent_first_name"
+    t.string   "co_list_agent_last_name"
+    t.string   "co_list_agent_middle_name"
+    t.string   "co_list_agent_state_license"
+    t.string   "co_list_agent_email"
+    t.string   "co_list_agent_preferred_phone"
+    t.string   "co_list_agent_cell_phone"
+    t.string   "co_list_agent_office_phone"
+    t.string   "co_list_agent_direct_phone"
+    t.text     "co_list_agent_url"
+    t.string   "co_list_agent_voice_mail"
+    t.string   "co_list_agent_preferred_phone_ext"
+    t.string   "co_list_agent_office_phone_ext"
+    t.string   "co_list_agent_voice_mail_ext"
+    t.string   "co_list_agent_fax"
+    t.string   "co_list_agent_designation"
+    t.string   "co_list_agent_pager"
+    t.string   "co_list_agent_toll_free_phone"
+    t.string   "co_list_office_id"
+    t.string   "co_list_office_name"
+    t.string   "co_list_office_email"
+    t.string   "co_list_office_phone"
+    t.string   "co_list_office_phone_ext"
+    t.string   "co_list_office_fax"
+    t.text     "co_list_office_url"
+    t.string   "co_list_company_id"
+    t.string   "buyer_agent_id"
+    t.string   "buyer_agent_first_name"
+    t.string   "buyer_agent_last_name"
+    t.string   "buyer_agent_middle_name"
+    t.string   "buyer_agent_user_type"
+    t.string   "buyer_agent_state_license"
+    t.text     "buyer_agent_association"
+    t.string   "buyer_agent_email"
+    t.string   "buyer_agent_preferred_phone"
+    t.string   "buyer_agent_cell_phone"
+    t.string   "buyer_agent_office_phone"
+    t.string   "buyer_agent_direct_phone"
+    t.text     "buyer_agent_url"
+    t.string   "buyer_agent_voice_mail"
+    t.integer  "buyer_agent_preferred_phone_ext"
+    t.integer  "buyer_agent_office_phone_ext"
+    t.integer  "buyer_agent_voice_mail_ext"
+    t.string   "buyer_agent_fax"
+    t.string   "buyer_agent_designation"
+    t.string   "buyer_agent_pager"
+    t.string   "buyer_agent_toll_free_phone"
+    t.string   "buyer_office_id"
+    t.string   "buyer_office_name"
+    t.string   "buyer_office_user_type"
+    t.string   "buyer_office_email"
+    t.string   "buyer_office_phone"
+    t.integer  "buyer_office_phone_ext"
+    t.string   "buyer_office_fax"
+    t.text     "buyer_office_url"
+    t.string   "co_buyer_agent_id"
+    t.string   "co_buyer_agent_first_name"
+    t.string   "co_buyer_agent_last_name"
+    t.string   "co_buyer_agent_middle_name"
+    t.string   "co_buyer_agent_state_license"
+    t.string   "co_buyer_agent_email"
+    t.string   "co_buyer_agent_preferred_phone"
+    t.string   "co_buyer_agent_office_phone"
+    t.string   "co_buyer_agent_direct_phone"
+    t.string   "co_buyer_agent_cell_phone"
+    t.string   "co_buyer_agent_voice_mail"
+    t.integer  "co_buyer_agent_preferred_phone_ext"
+    t.integer  "co_buyer_agent_office_phone_ext"
+    t.integer  "co_buyer_agent_voice_mail_ext"
+    t.string   "co_buyer_agent_fax"
+    t.string   "co_buyer_agent_designation"
+    t.string   "co_buyer_agent_pager"
+    t.string   "co_buyer_agent_toll_free_phone"
+    t.text     "co_buyer_agent_url"
+    t.string   "co_buyer_office_id"
+    t.string   "co_buyer_office_name"
+    t.string   "co_buyer_office_email"
+    t.string   "co_buyer_office_phone"
+    t.integer  "co_buyer_office_phone_ext"
+    t.string   "co_buyer_office_fax"
+    t.text     "co_buyer_office_url"
+    t.datetime "modification_timestamp"
+    t.date     "listing_contract_date"
+    t.date     "expiration_date"
+    t.date     "cancel_date"
+    t.date     "withdraw_date"
+    t.date     "purchase_contract_date"
+    t.date     "close_date"
+    t.datetime "on_market_date"
+    t.date     "off_market_date"
+    t.date     "pending_date"
+    t.datetime "pending_timestamp"
+    t.datetime "status_change_timestamp"
+    t.datetime "price_change_timestamp"
+    t.datetime "major_change_timestamp"
+    t.datetime "original_entry_timestamp"
+    t.datetime "closed_timestamp"
+    t.date     "status_change_date"
+    t.integer  "days_on_market"
+    t.integer  "cumulative_days_on_market"
+    t.datetime "expired_timestamp"
+    t.datetime "withdrawn_timestamp"
+    t.datetime "back_on_market_timestamp"
+    t.datetime "canceled_timestamp"
+    t.datetime "original_on_market_timestamp"
+    t.datetime "extension_timestamp"
+    t.text     "private_office_remarks"
+    t.text     "contingency_remarks"
+    t.text     "private_remarks"
+    t.text     "public_remarks"
+    t.text     "showing_instructions"
+    t.string   "showing_phone_extension"
+    t.string   "showing_phone_number"
+    t.integer  "photos_count"
+    t.integer  "videos_count"
+    t.integer  "documents_count"
+    t.integer  "virtual_tours_count"
+    t.integer  "baths_half"
+    t.float    "baths_total"
+    t.integer  "baths_full"
+    t.string   "total_bathrooms_source"
+    t.integer  "beds_total"
+    t.string   "major_change_type"
+    t.boolean  "vow_address_display_yn"
+    t.string   "mls_listing_id"
+    t.string   "property_sub_type"
+    t.string   "syndication_listing_reference_url"
+    t.boolean  "vow_automated_valuation_display_yn"
+    t.boolean  "vow_consumer_comment_yn"
+    t.float    "building_area_total"
+    t.string   "contingency"
+    t.boolean  "vow_entire_listing_display_yn"
+    t.boolean  "idx_participant"
+    t.string   "supplement"
+    t.string   "parcel_number"
+    t.string   "mls_status_information"
+    t.boolean  "sold_exclusive"
+    t.integer  "listing_number"
+    t.boolean  "permit_internet_yn"
+    t.string   "alternate_emails",                                                     array: true
+    t.string   "alternate_phones",                                                     array: true
+    t.json     "custom_fields"
+    t.datetime "photos_timestamp"
+    t.text     "custom_office_contacts",             default: "--- {}\n"
+    t.text     "broker_remarks_contacts",            default: "--- {}\n"
+    t.text     "custom_listing_agent_contacts",      default: "--- {}\n"
+    t.json     "original_rets_attributes"
+  end
+
+  add_index "listing_extra_data", ["listing_id"], name: "index_listing_extra_data_on_listing_id", unique: true, using: :btree
+
+  create_table "listing_notes", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "listing_id",                         null: false
+    t.text     "note"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "owner",      default: "buyer_agent"
+  end
+
+  add_index "listing_notes", ["listing_id", "user_id"], name: "index_listing_notes_on_listing_id_and_user_id", using: :btree
+
+  create_table "listings", force: :cascade do |t|
+    t.string    "street"
+    t.string    "city"
+    t.string    "postal_code"
+    t.datetime  "created_at"
+    t.datetime  "updated_at"
+    t.string    "listing_type"
+    t.decimal   "price"
+    t.string    "mls_number"
+    t.integer   "survey_id"
+    t.string    "property_type"
+    t.string    "property_sub_type"
+    t.string    "listing_key",                                                                                   null: false
+    t.string    "property_class"
+    t.string    "status"
+    t.integer   "bedrooms"
+    t.float     "bathrooms"
+    t.float     "square_footage"
+    t.integer   "year_built"
+    t.decimal   "latitude"
+    t.decimal   "longitude"
+    t.string    "state_or_province"
+    t.string    "street_name"
+    t.string    "street_number"
+    t.string    "subdivision_name"
+    t.string    "county_or_parish"
+    t.string    "unit_number"
+    t.date      "listing_contract_date"
+    t.integer   "image_count"
+    t.string    "list_agent_id"
+    t.string    "co_list_agent_id"
+    t.string    "list_office_id"
+    t.string    "platform_name"
+    t.float     "square_footage_lot"
+    t.string    "street_direction"
+    t.string    "street_suffix"
+    t.string    "development_name"
+    t.string    "geo_area"
+    t.string    "location_area"
+    t.float     "square_footage_total"
+    t.string    "pets_allowed"
+    t.string    "private_pool"
+    t.string    "waterfront"
+    t.string    "reo"
+    t.string    "short_sale"
+    t.boolean   "accessible_from_feed",                                                           default: true
+    t.geography "coordinates",           limit: {:srid=>4326, :type=>"point", :geographic=>true}
+    t.string    "listing_board"
+    t.decimal   "mile_marker"
+    t.text      "furnished",                                                                                                  array: true
+    t.string    "rets_feed_key"
+    t.string    "mls_number_lowercase"
+  end
+
+  add_index "listings", ["city"], name: "index_listings_on_city", using: :btree
+  add_index "listings", ["id"], name: "index_listings_on_id", unique: true, using: :btree
+  add_index "listings", ["latitude", "longitude"], name: "index_listings_on_latitude_and_longitude", using: :btree
+  add_index "listings", ["list_agent_id"], name: "index_listings_on_list_agent_id", using: :btree
+  add_index "listings", ["listing_contract_date"], name: "index_listings_on_listing_contract_date", using: :btree
+  add_index "listings", ["listing_type"], name: "index_listings_on_listing_type", using: :btree
+  add_index "listings", ["mls_number_lowercase"], name: "index_listings_on_mls_number_lowercase", using: :btree
+  add_index "listings", ["platform_name", "accessible_from_feed"], name: "index_listings_on_platform_name_and_accessible_from_feed", using: :btree
+  add_index "listings", ["platform_name", "listing_key"], name: "index_listings_on_platform_name_and_listing_key", unique: true, using: :btree
+  add_index "listings", ["postal_code"], name: "index_listings_on_postal_code", using: :btree
+  add_index "listings", ["price"], name: "index_listings_on_price", using: :btree
+  add_index "listings", ["state_or_province"], name: "index_listings_on_state_or_province", using: :btree
+  add_index "listings", ["status"], name: "index_listings_on_status", using: :btree
+  add_index "listings", ["street"], name: "index_listings_on_street", using: :btree
+
+  create_table "listings_lists", id: false, force: :cascade do |t|
+    t.integer "list_id",    null: false
+    t.integer "listing_id", null: false
+  end
+
+  add_index "listings_lists", ["list_id", "listing_id"], name: "index_listings_lists_on_list_id_and_listing_id", unique: true, using: :btree
+
+  create_table "lists", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.text     "msg"
+    t.string   "to",                           default: "listing_agent", null: false
+    t.string   "from"
+    t.integer  "parent_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "has_read",                     default: false
+    t.string   "group_uuid"
+    t.boolean  "listing_with_instant_reply",   default: false,           null: false
+    t.boolean  "notification"
+    t.boolean  "text"
+    t.string   "message_type",                 default: "system"
+    t.string   "showing_status"
+    t.integer  "duration"
+    t.datetime "requested_time"
+    t.boolean  "request_a_call"
+    t.string   "lockbox_kind"
+    t.string   "lockbox_kind_changed_from"
+    t.string   "lockbox_code"
+    t.string   "response_token"
+    t.string   "explanation"
+    t.boolean  "listing_agent_will_accompany"
+    t.boolean  "tenant_will_accompany"
+    t.boolean  "access_changed"
+    t.boolean  "status_changed"
+    t.string   "type"
+    t.integer  "support_conversation_id"
+    t.string   "parent_type"
+    t.integer  "conversation_id"
+    t.integer  "sender_id"
+    t.string   "sender_type"
+  end
+
+  add_index "messages", ["parent_id", "group_uuid"], name: "index_messages_on_parent_id_and_group_uuid", using: :btree
+  add_index "messages", ["parent_id"], name: "index_messages_on_parent_id", using: :btree
+  add_index "messages", ["support_conversation_id"], name: "index_messages_on_support_conversation_id", using: :btree
+
+  create_table "messaging_conversations", force: :cascade do |t|
+    t.string   "subject",    default: ""
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.boolean  "removed",    default: false, null: false
+  end
+
+  create_table "messaging_receipts", force: :cascade do |t|
+    t.integer  "receiver_id"
+    t.string   "receiver_type"
+    t.boolean  "is_read",                  default: false
+    t.boolean  "trashed",                  default: false
+    t.boolean  "deleted",                  default: false
+    t.string   "mailbox_type",  limit: 25
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.integer  "message_id"
+  end
+
+  add_index "messaging_receipts", ["receiver_id", "receiver_type"], name: "index_messaging_receipts_on_receiver_id_and_receiver_type", using: :btree
+
+  create_table "messaging_unread_counters", force: :cascade do |t|
+    t.integer  "interlocutor_id"
+    t.string   "interlocutor_type"
+    t.integer  "subject_id"
+    t.string   "subject_type"
+    t.integer  "text_messages_count", default: 0
+    t.integer  "messages_count",      default: 0
+    t.integer  "notifications_count", default: 0
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
+
+  add_index "messaging_unread_counters", ["interlocutor_id", "interlocutor_type", "subject_id", "subject_type"], name: "index_messaging_unread_counters_uniqueness", unique: true, using: :btree
+
+  create_table "mlses", force: :cascade do |t|
+    t.string   "name",                                                     null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "time_zone",         default: "Eastern Time (US & Canada)", null: false
+    t.string   "status"
+    t.string   "state"
+    t.string   "mls_kind"
+    t.string   "platform_name"
+    t.boolean  "allow_sign_up",     default: true,                         null: false
+    t.string   "address"
+    t.string   "phone"
+    t.string   "logo"
+    t.string   "mls_associations"
+    t.datetime "last_synced_at"
+    t.string   "system_name"
+    t.string   "remote_logo_link"
+    t.string   "abbreviation"
+    t.string   "mailchimp_list_id"
+    t.string   "board_code"
+  end
+
+  add_index "mlses", ["mailchimp_list_id"], name: "index_mlses_on_mailchimp_list_id", using: :btree
+
+  create_table "notification_settings", force: :cascade do |t|
+    t.string   "muted_email"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "platform_name"
+    t.string   "muted_agent_id"
+    t.string   "muted_listing_id"
+  end
+
+  create_table "offices", force: :cascade do |t|
+    t.string   "office_id"
+    t.string   "name"
+    t.integer  "nrds_id"
+    t.boolean  "active"
+    t.boolean  "mls_status"
+    t.string   "license_number"
+    t.string   "primary_phone"
+    t.string   "office_phone"
+    t.string   "cell_phone"
+    t.string   "home_phone"
+    t.string   "email"
+    t.string   "fax"
+    t.string   "pager"
+    t.string   "url"
+    t.string   "street1"
+    t.string   "street2"
+    t.string   "state"
+    t.string   "city"
+    t.string   "zip"
+    t.string   "company_id"
+    t.string   "broker_id"
+    t.string   "broker_name"
+    t.string   "board_code"
+    t.string   "logon_type"
+    t.datetime "timestamp"
+    t.string   "platform_name"
+    t.boolean  "accessible_from_feed", default: true
+    t.string   "rets_feed_key"
+  end
+
+  add_index "offices", ["platform_name", "office_id"], name: "index_offices_on_platform_name_and_office_id", unique: true, using: :btree
+
+  create_table "phone_carriers", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "photos", force: :cascade do |t|
+    t.integer  "parent_id"
+    t.string   "parent_type"
+    t.string   "content_id"
+    t.string   "file"
+    t.string   "media_type"
+    t.text     "description"
+    t.boolean  "preferred"
+    t.string   "object_id"
+    t.string   "type"
+    t.boolean  "moved_to_new_path", default: true, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "photos", ["parent_id", "parent_type"], name: "index_photos_on_parent_id_and_parent_type", using: :btree
+  add_index "photos", ["type", "preferred", "parent_type", "parent_id"], name: "index_preferred_photo", using: :btree
+
+  create_table "preferences", force: :cascade do |t|
+    t.integer  "user_id",                                        null: false
+    t.integer  "default_showing_duration",       default: 15,    null: false
+    t.boolean  "auto_send_calendar_invitations", default: false, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "demo_mode",                      default: false
+  end
+
+  add_index "preferences", ["user_id"], name: "index_preferences_on_user_id", using: :btree
+
+  create_table "push_notifications", force: :cascade do |t|
+    t.integer  "device_token_id", null: false
+    t.string   "message"
+    t.string   "custom_payload"
+    t.text     "sent_attributes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "push_notifications", ["device_token_id"], name: "index_push_notifications_on_device_token_id", using: :btree
+
+  create_table "question_options", force: :cascade do |t|
+    t.string   "option_text"
+    t.string   "follow_up_message"
+    t.integer  "question_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "enabled",           default: true
+  end
+
+  add_index "question_options", ["question_id"], name: "index_question_options_on_question_id", using: :btree
+
+  create_table "questions", force: :cascade do |t|
+    t.string   "question"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "enabled",    default: true
+    t.integer  "survey_id"
+  end
+
+  create_table "recent_searches", force: :cascade do |t|
+    t.integer  "user_id",           null: false
+    t.text     "search_parameters", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "recent_searches", ["user_id"], name: "index_recent_searches_on_user_id", using: :btree
+
+  create_table "replied_emails", force: :cascade do |t|
+    t.string   "email",      null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "replied_emails", ["email"], name: "index_replied_emails_on_email", unique: true, using: :btree
+
+  create_table "routes", force: :cascade do |t|
+    t.integer  "user_id",                             null: false
+    t.integer  "contact_id"
+    t.string   "name",                                null: false
+    t.datetime "start_at",                            null: false
+    t.integer  "duration"
+    t.text     "description"
+    t.string   "status",           default: "active"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "first_time_visit", default: true
+    t.boolean  "optimized",        default: true
+  end
+
+  create_table "saml_service_providers", force: :cascade do |t|
+    t.text     "metadata_url"
+    t.text     "issuer"
+    t.text     "assertion_consumer_service_url"
+    t.string   "assertion_consumer_service_binding"
+    t.text     "single_logout_service_url"
+    t.string   "single_logout_service_binding"
+    t.text     "certificate"
+    t.string   "name"
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+  end
+
+  create_table "saved_replies", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "name"
+    t.text     "reply"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "saved_replies", ["user_id"], name: "index_saved_replies_on_user_id", using: :btree
+
+  create_table "shortened_urls", force: :cascade do |t|
+    t.integer  "owner_id"
+    t.string   "owner_type", limit: 20
+    t.string   "url",                               null: false
+    t.string   "unique_key", limit: 10,             null: false
+    t.integer  "use_count",             default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "expires_at"
+  end
+
+  add_index "shortened_urls", ["owner_id", "owner_type"], name: "index_shortened_urls_on_owner_id_and_owner_type", using: :btree
+  add_index "shortened_urls", ["unique_key"], name: "index_shortened_urls_on_unique_key", unique: true, using: :btree
+  add_index "shortened_urls", ["url"], name: "index_shortened_urls_on_url", using: :btree
+
+  create_table "showing_notes", force: :cascade do |t|
+    t.integer  "showing_id", null: false
+    t.string   "owner",      null: false
+    t.text     "note"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "showing_notes", ["showing_id", "owner"], name: "index_showing_notes_on_showing_id_and_owner", unique: true, using: :btree
+  add_index "showing_notes", ["showing_id"], name: "index_showing_notes_on_showing_id", using: :btree
+
+  create_table "showing_request_notifications", force: :cascade do |t|
+    t.string   "recipient",                            null: false
+    t.string   "notification_type",                    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "token",                                null: false
+    t.boolean  "notified",             default: false
+    t.boolean  "has_read",             default: false
+    t.string   "contact_name"
+    t.boolean  "duplicate",            default: false
+    t.integer  "showing_id",                           null: false
+    t.string   "contact_phone_number"
+    t.string   "contact_email"
+    t.string   "agent_id"
+    t.string   "agent_platform_name"
+  end
+
+  add_index "showing_request_notifications", ["showing_id"], name: "index_showing_request_notifications_on_showing_id", using: :btree
+  add_index "showing_request_notifications", ["token"], name: "index_showing_request_notifications_on_token", using: :btree
+
+  create_table "showing_requests", force: :cascade do |t|
+    t.text     "message",        default: ""
+    t.datetime "requested_time",              null: false
+    t.integer  "duration",                    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "showing_responses", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "lockbox_kind",                 default: ""
+    t.string   "lockbox_code",                 default: ""
+    t.text     "message",                      default: ""
+    t.boolean  "request_a_call",               default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "listing_agent_will_accompany", default: false
+    t.boolean  "tenant_will_accompany",        default: false
+    t.boolean  "vacant"
+    t.datetime "rescheduled_to"
+    t.boolean  "unavailable_for_showing"
+    t.boolean  "property_sold"
+    t.boolean  "property_under_contract"
+    t.boolean  "notified",                     default: false
+    t.boolean  "has_read",                     default: false
+    t.string   "explanation"
+  end
+
+  add_index "showing_responses", ["user_id"], name: "index_showing_responses_on_user_id", using: :btree
+
+  create_table "showing_settings", force: :cascade do |t|
+    t.integer  "listing_id",                                   null: false
+    t.boolean  "enabled",                      default: true
+    t.string   "status"
+    t.string   "lockbox_kind",                 default: ""
+    t.string   "lockbox_code",                 default: ""
+    t.text     "message",                      default: ""
+    t.boolean  "request_a_call",               default: false
+    t.boolean  "listing_agent_will_accompany", default: false
+    t.boolean  "tenant_will_accompany",        default: false
+    t.boolean  "vacant"
+    t.boolean  "unavailable_for_showing"
+    t.boolean  "property_sold"
+    t.boolean  "property_under_contract"
+    t.string   "explanation"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "contact_id"
+    t.integer  "user_id"
+  end
+
+  add_index "showing_settings", ["contact_id"], name: "index_showing_settings_on_contact_id", using: :btree
+  add_index "showing_settings", ["listing_id"], name: "index_showing_settings_on_listing_id", using: :btree
+  add_index "showing_settings", ["user_id"], name: "index_showing_settings_on_user_id", using: :btree
+
+  create_table "showings", force: :cascade do |t|
+    t.integer  "listing_id",                                            null: false
+    t.integer  "buyer_agent_id"
+    t.boolean  "has_read"
+    t.datetime "requested_time"
+    t.boolean  "accepted"
+    t.boolean  "completed"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "platform_listing_agent_id"
+    t.string   "platform_co_listing_agent_id"
+    t.integer  "listing_agent_id"
+    t.integer  "co_listing_agent_id"
+    t.integer  "active_showing_request_id"
+    t.integer  "active_showing_response_id"
+    t.text     "bayer_agent_note"
+    t.text     "listing_agent_note"
+    t.string   "status",                           default: "not_sent", null: false
+    t.integer  "request_id"
+    t.integer  "response_id"
+    t.integer  "travel_time",                      default: 0,          null: false
+    t.integer  "route_id"
+    t.integer  "position"
+    t.integer  "ba_unread_messages_count",         default: 0
+    t.integer  "ba_unread_text_messages_count",    default: 0
+    t.integer  "ba_unread_notifications_count",    default: 0
+    t.integer  "la_unread_messages_count",         default: 0
+    t.integer  "la_unread_text_messages_count",    default: 0
+    t.integer  "la_unread_notifications_count",    default: 0
+    t.boolean  "draft",                            default: false
+    t.string   "unique_id",                                             null: false
+    t.integer  "calendar_sequence",                default: 0
+    t.string   "listing_platform_id"
+    t.integer  "conversation_id"
+    t.boolean  "demo_mode",                        default: false
+    t.integer  "co_la_unread_messages_count",      default: 0
+    t.integer  "co_la_unread_text_messages_count", default: 0
+    t.integer  "co_la_unread_notifications_count", default: 0
+    t.boolean  "show_not_responded_message",       default: true
+    t.string   "platform_buyer_agent_id"
+    t.integer  "created_by_user_id"
+  end
+
+  add_index "showings", ["active_showing_request_id"], name: "index_showings_on_active_showing_request_id", using: :btree
+  add_index "showings", ["active_showing_response_id"], name: "index_showings_on_active_showing_response_id", using: :btree
+  add_index "showings", ["buyer_agent_id"], name: "index_showings_on_buyer_agent_id", using: :btree
+  add_index "showings", ["co_listing_agent_id"], name: "index_showings_on_co_listing_agent_id", using: :btree
+  add_index "showings", ["created_by_user_id"], name: "index_showings_on_created_by_user_id", using: :btree
+  add_index "showings", ["listing_agent_id"], name: "index_showings_on_listing_agent_id", using: :btree
+  add_index "showings", ["listing_id"], name: "index_showings_on_listing_id", using: :btree
+  add_index "showings", ["request_id"], name: "index_showings_on_request_id", using: :btree
+  add_index "showings", ["response_id"], name: "index_showings_on_response_id", using: :btree
+  add_index "showings", ["route_id", "listing_id"], name: "index_showings_on_route_id_and_listing_id", unique: true, using: :btree
+  add_index "showings", ["unique_id"], name: "index_showings_on_unique_id", unique: true, using: :btree
+
+  create_table "spark_mls_field_values", force: :cascade do |t|
+    t.string   "name",               null: false
+    t.integer  "spark_mls_field_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "spark_mls_field_values", ["spark_mls_field_id"], name: "index_spark_mls_field_values_on_spark_mls_field_id", using: :btree
+
+  create_table "spark_mls_fields", force: :cascade do |t|
+    t.string   "name",         null: false
+    t.integer  "mls_id",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "listing_type"
+  end
+
+  add_index "spark_mls_fields", ["mls_id"], name: "index_spark_mls_fields_on_mls_id", using: :btree
+
+  create_table "starred_listings", force: :cascade do |t|
+    t.integer "listing_id", null: false
+    t.integer "user_id",    null: false
+  end
+
+  add_index "starred_listings", ["user_id", "listing_id"], name: "index_starred_listings_on_user_id_and_listing_id", unique: true, using: :btree
+
+  create_table "support_conversations", force: :cascade do |t|
+    t.integer  "conversation_id"
+    t.integer  "assigned_user_id"
+    t.integer  "support_department_id"
+    t.string   "platform_agent_id"
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.string   "token"
+    t.string   "type"
+    t.boolean  "closed",                default: false
+  end
+
+  add_index "support_conversations", ["assigned_user_id"], name: "index_support_conversations_on_assigned_user_id", using: :btree
+  add_index "support_conversations", ["conversation_id"], name: "index_support_conversations_on_conversation_id", using: :btree
+  add_index "support_conversations", ["platform_agent_id"], name: "index_support_conversations_on_platform_agent_id", using: :btree
+  add_index "support_conversations", ["support_department_id"], name: "index_support_conversations_on_support_department_id", using: :btree
+  add_index "support_conversations", ["type"], name: "index_support_conversations_on_type", using: :btree
+
+  create_table "support_departments", force: :cascade do |t|
+    t.integer  "mls_id"
+    t.string   "name"
+    t.string   "description"
+    t.integer  "default_receiver_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "type"
+  end
+
+  add_index "support_departments", ["default_receiver_id"], name: "index_support_departments_on_default_receiver_id", using: :btree
+  add_index "support_departments", ["mls_id"], name: "index_support_departments_on_mls_id", using: :btree
+  add_index "support_departments", ["type"], name: "index_support_departments_on_type", using: :btree
+
+  create_table "surveys", force: :cascade do |t|
+    t.boolean  "completed",     default: false
+    t.integer  "listing_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "survey_type"
+    t.integer  "max_questions"
+  end
+
+  add_index "surveys", ["listing_id"], name: "index_surveys_on_listing_id", using: :btree
+
+  create_table "university_settings", force: :cascade do |t|
+    t.integer  "user_id",                                null: false
+    t.boolean  "hide_for_showings",      default: false, null: false
+    t.boolean  "hide_for_routes",        default: false, null: false
+    t.boolean  "hide_for_my_listings",   default: false, null: false
+    t.boolean  "hide_for_user_messages", default: false, null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+  end
+
+  add_index "university_settings", ["user_id"], name: "index_university_settings_on_user_id", using: :btree
+
+  create_table "users", force: :cascade do |t|
+    t.string   "email",                      default: "",                           null: false
+    t.string   "encrypted_password",         default: ""
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",              default: 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "license"
+    t.string   "phone"
+    t.string   "company"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.integer  "mls_id"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string   "unconfirmed_email"
+    t.string   "authentication_token"
+    t.string   "spark_access_token"
+    t.string   "spark_refresh_token"
+    t.datetime "spark_tokens_updated_at"
+    t.string   "platform_id"
+    t.integer  "unread_text_messages_count", default: 0
+    t.integer  "unread_notifications_count", default: 0
+    t.string   "address"
+    t.integer  "phone_carrier"
+    t.integer  "role"
+    t.string   "registration_state",         default: "setting_up_account",         null: false
+    t.string   "mls_name"
+    t.string   "avatar"
+    t.boolean  "signed_into_platform",       default: false,                        null: false
+    t.boolean  "can_be_used_in_demo_mode",   default: false
+    t.string   "time_zone",                  default: "Eastern Time (US & Canada)", null: false
+    t.string   "remote_avatar_link"
+    t.string   "invitation_token"
+    t.datetime "invitation_created_at"
+    t.datetime "invitation_sent_at"
+    t.datetime "invitation_accepted_at"
+    t.integer  "invitation_limit"
+    t.integer  "invited_by_id"
+    t.string   "invited_by_type"
+    t.integer  "invitations_count",          default: 0
+    t.string   "agent_access_level",         default: "regular",                    null: false
+    t.string   "mls_support_access_level",   default: "none",                       null: false
+    t.boolean  "account_active",             default: true
+    t.string   "platform_user_name"
+  end
+
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["invitation_token"], name: "index_users_on_invitation_token", unique: true, using: :btree
+  add_index "users", ["invitations_count"], name: "index_users_on_invitations_count", using: :btree
+  add_index "users", ["invited_by_id"], name: "index_users_on_invited_by_id", using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+
+  create_table "waiting_lists", force: :cascade do |t|
+    t.string   "first_name"
+    t.string   "last_name"
+    t.integer  "mls_id"
+    t.string   "mls_association"
+    t.string   "platform_id"
+    t.string   "phone"
+    t.string   "email"
+    t.string   "license"
+    t.string   "office"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "city"
+  end
+
+  add_foreign_key "account_confirmations", "accounts"
+  add_foreign_key "account_confirmations", "mlses"
+  add_foreign_key "authentication_tokens", "users"
+  add_foreign_key "broadcast_tokens", "support_conversations"
+  add_foreign_key "messages", "support_conversations"
+  add_foreign_key "support_conversations", "support_departments"
+end
